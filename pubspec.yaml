@@ -44,6 +44,7 @@ dependencies:
   internet_connection_checker: ^2.0.0
   path: ^1.9.0
   shared_preferences: ^2.2.3
+  bloc: ^8.1.4
 
 dev_dependencies:
   flutter_test:
