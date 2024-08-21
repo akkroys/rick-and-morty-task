@@ -20,7 +20,7 @@ class CharacterRepositoryImpl implements CharacterRepository {
   });
 
   @override
-  Future<Either<Failure, List<Character>>> getCharacters({int page = 1}) async {
+  Future<Either<Failure, List<Character>>> getCharacters(int page) async {
     if (await networkInfo.isConnected) {
       try {
         final remoteData = await remoteDataSource.getCharacters(page);

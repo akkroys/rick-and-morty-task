@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:rick_morty_task/core/usecase/usecase.dart';
 import 'package:rick_morty_task/features/characters/domain/entities/character.dart';
 import 'package:rick_morty_task/features/characters/domain/usecases/get_character_details.dart';
 import 'package:rick_morty_task/features/characters/domain/usecases/get_characters.dart';
@@ -22,9 +21,11 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
   }
 
   void _onLoadCharacters(
-      LoadCharacters event, Emitter<CharactersState> emit) async {
+    LoadCharacters event,
+    Emitter<CharactersState> emit,
+  ) async {
     emit(CharactersLoading([]));
-    final charactersResult = await getCharacters(NoParams());
+    final charactersResult = await getCharacters(GetCharactersParams(page: 1));
     charactersResult.fold(
       (failure) => emit(CharacterError("Error loading characters")),
       (characters) => emit(CharactersLoaded(characters: characters)),
@@ -32,11 +33,12 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
   }
 
   void _onLoadMoreCharacters(
-      LoadMoreCharacters event, Emitter<CharactersState> emit) async {
+    LoadMoreCharacters event,
+    Emitter<CharactersState> emit,
+  ) async {
     final currentState = state;
     if (currentState is CharactersLoaded && !currentState.hasReachedMax) {
-      emit(CharactersLoading(currentState.characters));
-      final charactersResult = await getCharacters(NoParams());
+      final charactersResult = await getCharacters(GetCharactersParams(page: event.page));
       charactersResult.fold(
         (failure) => emit(CharacterError("Error loading characters")),
         (characters) {
@@ -44,7 +46,8 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
             emit(currentState.copyWith(hasReachedMax: true));
           } else {
             emit(CharactersLoaded(
-              characters: currentState.characters + characters,
+              characters: characters,
+              hasReachedMax: false,
             ));
           }
         },
@@ -58,7 +61,7 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
     final characterResult = await getCharacterDetails(
         GetCharacterDetailsParams(id: event.characterId));
     characterResult.fold(
-      (failure) => emit(CharacterError("Ошибка загрузки деталей персонажа")),
+      (failure) => emit(CharacterError("Error loading character's details")),
       (character) => emit(CharacterDetailsLoaded(character)),
     );
   }
