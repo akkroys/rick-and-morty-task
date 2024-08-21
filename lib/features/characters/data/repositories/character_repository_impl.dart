@@ -24,11 +24,9 @@ class CharacterRepositoryImpl implements CharacterRepository {
     if (await networkInfo.isConnected) {
       try {
         final remoteData = await remoteDataSource.getCharacters(page);
-        final remoteCharacters =
-            remoteData['characters'] as List<CharacterModel>;
-        localDataSource.cacheCharacters(remoteCharacters);
-        return Right(
-            remoteCharacters.map((model) => model.toEntity()).toList());
+        final remoteCharacters = remoteData['characters'] as List<CharacterModel>;
+        await localDataSource.cacheCharacters(remoteCharacters);
+        return Right(remoteCharacters.map((model) => model.toEntity()).toList());
       } on ServerException {
         return Left(ServerFailure());
       }
@@ -53,8 +51,7 @@ class CharacterRepositoryImpl implements CharacterRepository {
       }
     } else {
       try {
-        final localCharacter =
-            await localDataSource.getCachedCharacterDetails(id);
+        final localCharacter = await localDataSource.getCachedCharacterDetails(id);
         if (localCharacter != null) {
           return Right(localCharacter.toEntity());
         } else {

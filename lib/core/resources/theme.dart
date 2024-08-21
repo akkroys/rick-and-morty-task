@@ -5,7 +5,7 @@ ThemeData lightTheme = ThemeData(
   secondaryHeaderColor: Colors.black,
   appBarTheme: AppBarTheme(
     backgroundColor: Color(0xffF4F4F9),
-    color: Colors.black,
+    // color: Colors.black,
   ),
   scaffoldBackgroundColor: Color(0xffF4F4F9),
   cardTheme: CardTheme(
@@ -28,7 +28,7 @@ ThemeData darkTheme = ThemeData(
   primaryColor: Color(0xff181819),
   secondaryHeaderColor: Color(0xffF4F4F9),
   appBarTheme: AppBarTheme(
-    color: Color(0xffF4F4F9),
+    // color: Color(0xffF4F4F9),
     backgroundColor: Colors.black,
   ),
   brightness: Brightness.dark,

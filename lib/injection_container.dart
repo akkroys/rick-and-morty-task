@@ -3,7 +3,6 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:rick_morty_task/core/platform/network_info.dart';
 import 'package:rick_morty_task/features/characters/data/datasources/character_local_data_source.dart';
 import 'package:rick_morty_task/features/characters/data/datasources/character_remote_data_source.dart';
-import 'package:rick_morty_task/features/characters/data/datasources/db_helper.dart';
 import 'package:rick_morty_task/features/characters/data/datasources/settings_local_data_source.dart';
 import 'package:rick_morty_task/features/characters/data/repositories/character_repository_impl.dart';
 import 'package:rick_morty_task/features/characters/data/repositories/settings_repository_impl.dart';
@@ -19,6 +18,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  final sharedPreferences = await SharedPreferences.getInstance();
+  sl.registerLazySingleton(() => sharedPreferences);
+  
   sl.registerFactory(() => CharactersBloc(
         getCharacters: sl(),
         getCharacterDetails: sl(),
@@ -39,19 +41,14 @@ Future<void> init() async {
     () => CharacterRemoteDataSourceImpl(client: sl()),
   );
 
-  sl.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());
-
   sl.registerLazySingleton<CharacterLocalDataSource>(
-    () => CharacterLocalDataSourceImpl(sl<DatabaseHelper>()),
+    () => CharacterLocalDataSourceImpl(sl<SharedPreferences>()),
   );
 
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
 
   sl.registerLazySingleton(() => http.Client());
   sl.registerLazySingleton(() => InternetConnectionChecker());
-
-  final sharedPreferences = await SharedPreferences.getInstance();
-  sl.registerLazySingleton(() => sharedPreferences);
 
   sl.registerLazySingleton<SettingsLocalDataSource>(
     () => SettingsLocalDataSourceImpl(sharedPreferences: sl()),

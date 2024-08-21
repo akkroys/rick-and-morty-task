@@ -48,6 +48,7 @@ dependencies:
   infinite_scroll_pagination: ^4.0.0
   flutter_svg: ^2.0.10+1
   flutter_switch: ^0.3.2
+  cached_network_image: ^3.4.0
 
 dev_dependencies:
   flutter_test:

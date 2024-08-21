@@ -1,5 +1,4 @@
-import 'package:rick_morty_task/features/characters/data/datasources/db_helper.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/character_model.dart';
 
 abstract class CharacterLocalDataSource {
@@ -9,43 +8,38 @@ abstract class CharacterLocalDataSource {
 }
 
 class CharacterLocalDataSourceImpl implements CharacterLocalDataSource {
-  final DatabaseHelper _dbHelper;
+  final SharedPreferences _prefs;
+  static const String _charactersKey = 'characters_key';
 
-  CharacterLocalDataSourceImpl(this._dbHelper);
+  CharacterLocalDataSourceImpl(this._prefs);
 
   @override
   Future<void> cacheCharacters(List<CharacterModel> characters) async {
-    final db = await _dbHelper.database;
-    final batch = db.batch();
-    for (var character in characters) {
-      batch.insert(
-        'characters',
-        character.toJson(),
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-    }
-    await batch.commit(noResult: true);
+    final List<String> characterJsonList =
+        characters.map((c) => c.toJsonString()).toList();
+    await _prefs.setStringList(_charactersKey, characterJsonList);
   }
 
   @override
   Future<List<CharacterModel>> getCachedCharacters() async {
-    final db = await _dbHelper.database;
-    final List<Map<String, dynamic>> maps = await db.query('characters');
-
-    return maps.isNotEmpty
-        ? maps.map((map) => CharacterModel.fromJson(map)).toList()
-        : [];
+    final List<String>? characterJsonList =
+        _prefs.getStringList(_charactersKey);
+    if (characterJsonList != null) {
+      return characterJsonList
+          .map((jsonString) => CharacterModel.fromJsonString(jsonString))
+          .toList();
+    } else {
+      return [];
+    }
   }
 
   @override
   Future<CharacterModel?> getCachedCharacterDetails(int id) async {
-    final db = await _dbHelper.database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      'characters',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-
-    return maps.isNotEmpty ? CharacterModel.fromJson(maps.first) : null;
+    final characters = await getCachedCharacters();
+    try {
+      return characters.firstWhere((character) => character.id == id);
+    } catch (e) {
+      return null;
+    }
   }
 }

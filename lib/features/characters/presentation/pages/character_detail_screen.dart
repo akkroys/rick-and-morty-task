@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_morty_task/features/characters/presentation/bloc/characters/characters_bloc.dart';
@@ -13,7 +14,7 @@ class CharacterDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    // final theme = Theme.of(context);
 
     // final nameLines = characterName.split(' ').join('\n');
     final screenWidth = MediaQuery.of(context).size.width;
@@ -65,11 +66,16 @@ class CharacterDetailScreen extends StatelessWidget {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(12.0),
-                                child: Image.network(
-                                  character.imageUrl,
-                                  height: 150,
+                                child: CachedNetworkImage(
+                                  imageUrl: character.imageUrl,
                                   width: 150,
+                                  height: 150,
                                   fit: BoxFit.cover,
+                                  placeholder: (context, url) => Image.asset(
+                                      'assets/icons/unknown_character.jpeg'),
+                                  errorWidget: (context, url, error) =>
+                                      Image.asset(
+                                          'assets/icons/unknown_character.jpeg'),
                                 ),
                               ),
                               SizedBox(width: 16),

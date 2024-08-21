@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:rick_morty_task/features/characters/data/models/location_model.dart';
 import 'package:rick_morty_task/features/characters/data/models/origin_model.dart';
 import 'package:rick_morty_task/features/characters/domain/entities/character.dart';
@@ -63,6 +65,13 @@ class CharacterModel {
       'url': url,
       'created': created,
     };
+  }
+
+  String toJsonString() => jsonEncode(toJson());
+
+  static CharacterModel fromJsonString(String jsonString) {
+    final jsonMap = jsonDecode(jsonString) as Map<String, dynamic>;
+    return CharacterModel.fromJson(jsonMap);
   }
 
   Character toEntity() {

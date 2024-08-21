@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:rick_morty_task/features/characters/domain/entities/character.dart';
 import 'package:rick_morty_task/features/characters/presentation/pages/character_detail_screen.dart';
@@ -26,26 +27,30 @@ class CharacterListTile extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-            color:theme.cardColor,
+            color: theme.cardColor,
             borderRadius: BorderRadius.circular(16.0),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.3),
                 spreadRadius: 1,
                 blurRadius: 5,
-                offset: Offset(0, 3), // changes position of shadow
+                offset: Offset(0, 3),
               ),
             ],
           ),
           child: ListTile(
-            contentPadding: const EdgeInsets.all(8.0),
+            contentPadding: const EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8,),
             leading: ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
-              child: Image.network(
-                character.imageUrl,
-                width: 50,
+              child: CachedNetworkImage(
+                imageUrl: character.imageUrl,
                 height: 50,
-                fit: BoxFit.cover,
+                width: 50,
+                // fit: BoxFit.cover,
+                placeholder: (context, url) =>
+                    Image.asset('assets/icons/unknown_character.jpeg'),
+                errorWidget: (context, url, error) =>
+                    Image.asset('assets/icons/unknown_character.jpeg'),
               ),
             ),
             title: Text(
