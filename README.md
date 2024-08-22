@@ -1,16 +1,19 @@
-# rick_morty_task
-
-A new Flutter project.
+# A list of characters «Rick and Morty»
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+<p align="center">
+  <img src="https://cdn1.picturebb.com/1/2024/08/22/XUaco.jpg" height="500" />
+  <img src="https://cdn1.picturebb.com/1/2024/08/22/XUZyI.jpg" height="500" />
+  <img src="https://cdn1.picturebb.com/1/2024/08/22/XUu5N.jpg" height="500" />
+</p>
 
-A few resources to get you started if this is your first Flutter project:
+<p align="center">
+  <img src="https://cdn1.picturebb.com/1/2024/08/22/XUcKS.jpg" height="500" />
+  <img src="https://cdn1.picturebb.com/1/2024/08/22/XUDGY.jpg" height="500" />
+</p>
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<p align="center">
+  <img src="https://cdn1.picturebb.com/1/2024/08/22/XUgf3.jpg" height="500" />
+  <img src="https://cdn1.picturebb.com/1/2024/08/22/XUWld.jpg" height="500" />
+</p>
