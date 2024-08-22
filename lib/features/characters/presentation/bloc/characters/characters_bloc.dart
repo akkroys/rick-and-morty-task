@@ -24,10 +24,14 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
     LoadCharacters event,
     Emitter<CharactersState> emit,
   ) async {
-    emit(CharactersLoading([]));
-    final charactersResult = await getCharacters(GetCharactersParams(page: 1));
+    emit(const CharactersLoading([]));
+    final charactersResult = await getCharacters(GetCharactersParams(
+      page: 1,
+      status: event.status,
+      species: event.species,
+    ));
     charactersResult.fold(
-      (failure) => emit(CharacterError("Error loading characters")),
+      (failure) => emit(const CharacterError("Error loading characters")),
       (characters) => emit(CharactersLoaded(characters: characters)),
     );
   }
@@ -38,9 +42,13 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
   ) async {
     final currentState = state;
     if (currentState is CharactersLoaded && !currentState.hasReachedMax) {
-      final charactersResult = await getCharacters(GetCharactersParams(page: event.page));
+      final charactersResult = await getCharacters(GetCharactersParams(
+        page: event.page,
+        status: event.status ?? '',
+        species: event.species ?? '',
+      ));
       charactersResult.fold(
-        (failure) => emit(CharacterError("Error loading characters")),
+        (failure) => emit(const CharacterError("Error loading characters")),
         (characters) {
           if (characters.isEmpty) {
             emit(currentState.copyWith(hasReachedMax: true));
@@ -61,7 +69,7 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
     final characterResult = await getCharacterDetails(
         GetCharacterDetailsParams(id: event.characterId));
     characterResult.fold(
-      (failure) => emit(CharacterError("Error loading character's details")),
+      (failure) => emit(const CharacterError("Error loading character's details")),
       (character) => emit(CharacterDetailsLoaded(character)),
     );
   }

@@ -9,14 +9,11 @@ class CharacterDetailScreen extends StatelessWidget {
   final int characterId;
   final String characterName;
 
-  CharacterDetailScreen(
+  const CharacterDetailScreen(
       {super.key, required this.characterId, required this.characterName});
 
   @override
   Widget build(BuildContext context) {
-    // final theme = Theme.of(context);
-
-    // final nameLines = characterName.split(' ').join('\n');
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -26,7 +23,7 @@ class CharacterDetailScreen extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -41,7 +38,7 @@ class CharacterDetailScreen extends StatelessWidget {
         child: BlocBuilder<CharactersBloc, CharactersState>(
           builder: (context, state) {
             if (state is CharacterDetailsLoading) {
-              return Center(
+              return const Center(
                 child: CustomLoadingIcon(
                   assetPath: "assets/icons/characters_active.svg",
                 ),
@@ -51,88 +48,94 @@ class CharacterDetailScreen extends StatelessWidget {
               return SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
                 child: Center(
-                  child: Card(
-                    elevation: 8.0,
-                    shape: RoundedRectangleBorder(
+                  child: Container(
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(20.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          spreadRadius: 4,
+                          blurRadius: 8,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(12.0),
-                                child: CachedNetworkImage(
-                                  imageUrl: character.imageUrl,
-                                  width: 150,
-                                  height: 150,
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) => Image.asset(
-                                      'assets/icons/unknown_character.jpeg'),
-                                  errorWidget: (context, url, error) =>
-                                      Image.asset(
-                                          'assets/icons/unknown_character.jpeg'),
-                                ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12.0),
+                              child: CachedNetworkImage(
+                                imageUrl: character.imageUrl,
+                                width: 150,
+                                height: 150,
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) => Image.asset(
+                                    'assets/icons/unknown_character.jpeg'),
+                                errorWidget: (context, url, error) =>
+                                    Image.asset(
+                                        'assets/icons/unknown_character.jpeg'),
                               ),
-                              SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(height: 8),
-                                    Text(
-                                      'Name',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey[600],
-                                      ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Name',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey[600],
                                     ),
-                                    SizedBox(height: 4),
-                                    Text(
-                                      character.name,
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    character.name,
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          SizedBox(height: 20),
-                          Container(
-                            width: screenWidth,
-                            height: 1,
-                            color: Colors.grey,
-                          ),
-                          SizedBox(height: 20),
-                          CharacterDetailItem(
-                            title: 'Status',
-                            value: character.status,
-                          ),
-                          CharacterDetailItem(
-                            title: 'Species',
-                            value: character.species,
-                          ),
-                          CharacterDetailItem(
-                            title: 'Gender',
-                            value: character.gender,
-                          ),
-                          CharacterDetailItem(
-                            title: 'Origin',
-                            value: character.originName,
-                          ),
-                          CharacterDetailItem(
-                            title: 'Last Known Location',
-                            value: character.locationName,
-                          ),
-                        ],
-                      ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        Container(
+                          width: screenWidth,
+                          height: 1,
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(height: 20),
+                        CharacterDetailItem(
+                          title: 'Status',
+                          value: character.status,
+                        ),
+                        CharacterDetailItem(
+                          title: 'Species',
+                          value: character.species,
+                        ),
+                        CharacterDetailItem(
+                          title: 'Gender',
+                          value: character.gender,
+                        ),
+                        CharacterDetailItem(
+                          title: 'Origin',
+                          value: character.originName,
+                        ),
+                        CharacterDetailItem(
+                          title: 'Last Known Location',
+                          value: character.locationName,
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -140,7 +143,8 @@ class CharacterDetailScreen extends StatelessWidget {
             } else if (state is CharacterError) {
               return Center(child: Text(state.message));
             } else {
-              return Center(child: Text('No Character Details Available'));
+              return const Center(
+                  child: Text('No Character Details Available'));
             }
           },
         ),

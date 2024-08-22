@@ -11,16 +11,27 @@ class GetCharacters extends UseCase<List<Character>, GetCharactersParams> {
   GetCharacters(this.repository);
 
   @override
-  Future<Either<Failure, List<Character>>> call(GetCharactersParams params) async {
-    return await repository.getCharacters(params.page);
+  Future<Either<Failure, List<Character>>> call(
+      GetCharactersParams params) async {
+    return await repository.getCharacters(
+      params.page,
+      params.status,
+      params.species,
+    );
   }
 }
 
 class GetCharactersParams extends Equatable {
   final int page;
+  final String status;
+  final String species;
 
-  const GetCharactersParams({required this.page});
+  const GetCharactersParams({
+    this.status = '',
+    this.species = '',
+    required this.page,
+  });
 
   @override
-  List<Object> get props => [page];
+  List<Object> get props => [page, status, species];
 }

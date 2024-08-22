@@ -20,13 +20,17 @@ class CharacterRepositoryImpl implements CharacterRepository {
   });
 
   @override
-  Future<Either<Failure, List<Character>>> getCharacters(int page) async {
+  Future<Either<Failure, List<Character>>> getCharacters(
+      int page, String status, String species) async {
     if (await networkInfo.isConnected) {
       try {
-        final remoteData = await remoteDataSource.getCharacters(page);
-        final remoteCharacters = remoteData['characters'] as List<CharacterModel>;
+        final remoteData =
+            await remoteDataSource.getCharacters(page, status, species);
+        final remoteCharacters =
+            remoteData['characters'] as List<CharacterModel>;
         await localDataSource.cacheCharacters(remoteCharacters);
-        return Right(remoteCharacters.map((model) => model.toEntity()).toList());
+        return Right(
+            remoteCharacters.map((model) => model.toEntity()).toList());
       } on ServerException {
         return Left(ServerFailure());
       }
@@ -51,7 +55,8 @@ class CharacterRepositoryImpl implements CharacterRepository {
       }
     } else {
       try {
-        final localCharacter = await localDataSource.getCachedCharacterDetails(id);
+        final localCharacter =
+            await localDataSource.getCachedCharacterDetails(id);
         if (localCharacter != null) {
           return Right(localCharacter.toEntity());
         } else {

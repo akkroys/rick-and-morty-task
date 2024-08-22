@@ -5,7 +5,8 @@ import '../models/character_model.dart';
 import '../models/pagination_info_model.dart';
 
 abstract class CharacterRemoteDataSource {
-  Future<Map<String, dynamic>> getCharacters(int page);
+  Future<Map<String, dynamic>> getCharacters(
+      int page, String status, String species);
   Future<CharacterModel> getCharacterDetails(int id);
 }
 
@@ -15,10 +16,18 @@ class CharacterRemoteDataSourceImpl implements CharacterRemoteDataSource {
   CharacterRemoteDataSourceImpl({required this.client});
 
   @override
-  Future<Map<String, dynamic>> getCharacters(int page) async {
-    final response = await client.get(
-      Uri.parse('https://rickandmortyapi.com/api/character?page=$page'),
-    );
+  Future<Map<String, dynamic>> getCharacters(
+      int page, String status, String species) async {
+    final queryParameters = {
+      'page': page.toString(),
+      if (status.isNotEmpty) 'status': status,
+      if (species.isNotEmpty) 'species': species,
+    };
+
+    final uri =
+        Uri.https('rickandmortyapi.com', '/api/character', queryParameters);
+        
+    final response = await client.get(uri);
 
     if (response.statusCode == 200) {
       final jsonMap = json.decode(response.body) as Map<String, dynamic>;

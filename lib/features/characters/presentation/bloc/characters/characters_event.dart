@@ -9,20 +9,32 @@ abstract class CharactersEvent extends Equatable {
 
 class LoadCharacters extends CharactersEvent {
   final int page;
+  final String status;
+  final String species;
 
-  const LoadCharacters({required this.page});
+  const LoadCharacters({
+    required this.page,
+    this.status = '',
+    this.species = '',
+  });
 
   @override
-  List<Object> get props => [page];
+  List<Object> get props => [page, status, species];
 }
 
 class LoadMoreCharacters extends CharactersEvent {
   final int page;
+  final String? status;
+  final String? species;
 
-  const LoadMoreCharacters({required this.page});
+  const LoadMoreCharacters({
+    required this.page,
+    this.status,
+    this.species,
+  });
 
   @override
-  List<Object> get props => [page];
+  List<Object> get props => [page, status ?? '', species ?? ''];
 }
 
 class LoadCharacterDetails extends CharactersEvent {

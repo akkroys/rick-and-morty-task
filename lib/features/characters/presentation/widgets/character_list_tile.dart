@@ -34,7 +34,7 @@ class CharacterListTile extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.3),
                 spreadRadius: 1,
                 blurRadius: 5,
-                offset: Offset(0, 3),
+                offset: const Offset(0, 3),
               ),
             ],
           ),
@@ -55,7 +55,7 @@ class CharacterListTile extends StatelessWidget {
             ),
             title: Text(
               character.name,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
               ),

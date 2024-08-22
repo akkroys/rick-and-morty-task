@@ -13,11 +13,11 @@ class SettingsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Appearance',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             BlocBuilder<ThemeBloc, ThemeState>(
               builder: (context, state) {
                 bool isDarkMode = state is ThemeChanged &&
@@ -26,10 +26,10 @@ class SettingsScreen extends StatelessWidget {
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Dark Mode', style: TextStyle(fontSize: 16)),
+                    const Text('Dark Mode', style: TextStyle(fontSize: 16)),
                     Switch(
                       value: isDarkMode,
-                      activeColor: isDarkMode ? Color(0xff9595FE) : Color(0xffB3B3B3),
+                      activeColor: isDarkMode ? const Color(0xff9595FE) : const Color(0xffB3B3B3),
                       onChanged: (value) {
                         BlocProvider.of<ThemeBloc>(context)
                             .add(ToggleThemeEvent());

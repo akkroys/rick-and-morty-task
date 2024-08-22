@@ -5,10 +5,10 @@ class CharacterDetailItem extends StatelessWidget {
   final String value;
 
   const CharacterDetailItem({
-    Key? key,
+    super.key,
     required this.title,
     required this.value,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class CharacterDetailItem extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               color: Color(0xff666666),
               fontSize: 14,
               fontWeight: FontWeight.w600,
@@ -27,7 +27,7 @@ class CharacterDetailItem extends StatelessWidget {
           ),
           Text(
             value,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
