@@ -31,13 +31,5 @@ Future<void> showNoInternetDialog(BuildContext context) async {
         ],
       );
     },
-  ).then((_) {
-    if (!Navigator.of(context).canPop()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Internet's connected."),
-        ),
-      );
-    }
-  });
+  );
 }

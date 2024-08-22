@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -10,7 +12,7 @@ import 'package:rick_morty_task/features/characters/presentation/pages/settings_
 import 'package:rick_morty_task/features/characters/presentation/widgets/character_list_tile.dart';
 import 'package:rick_morty_task/features/characters/presentation/widgets/filter_options.dart';
 import 'package:rick_morty_task/features/characters/presentation/widgets/loading_icon.dart';
-import 'package:rick_morty_task/features/characters/presentation/widgets/show_no_interner.dart';
+import 'package:rick_morty_task/features/characters/presentation/widgets/show_no_internet_dialog.dart';
 import 'package:rick_morty_task/injection_container.dart' as di;
 
 class CharactersListScreen extends StatefulWidget {
@@ -28,6 +30,19 @@ class _CharactersListScreenState extends State<CharactersListScreen> {
   bool _isFilterVisible = false;
   String _selectedStatus = 'All';
   String _selectedSpecies = 'All';
+  bool _isConnected = false;
+  Timer? _connectionCheckTimer;
+  final networkInfo = di.sl<NetworkInfo>();
+
+  Future<void> _checkInternetConnection() async {
+    final isConnected = await networkInfo.isConnected;
+
+    if (mounted) {
+      setState(() {
+        _isConnected = isConnected;
+      });
+    }
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -57,6 +72,10 @@ class _CharactersListScreenState extends State<CharactersListScreen> {
   @override
   void initState() {
     super.initState();
+    _checkInternetConnection();
+    _connectionCheckTimer = Timer.periodic(Duration(seconds: 5), (timer) {
+      _checkInternetConnection();
+    });
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
@@ -65,7 +84,6 @@ class _CharactersListScreenState extends State<CharactersListScreen> {
 
   Future<void> _fetchPage(int pageKey) async {
     final bloc = BlocProvider.of<CharactersBloc>(context);
-    final networkInfo = di.sl<NetworkInfo>();
 
     if (await networkInfo.isConnected) {
       bloc.add(LoadMoreCharacters(
@@ -117,6 +135,7 @@ class _CharactersListScreenState extends State<CharactersListScreen> {
 
   @override
   void dispose() {
+    _connectionCheckTimer?.cancel();
     _pagingController.dispose();
     super.dispose();
   }
@@ -133,7 +152,7 @@ class _CharactersListScreenState extends State<CharactersListScreen> {
         title: _selectedIndex == 0
             ? const Text("Characters")
             : const Text("Settings"),
-        actions: _selectedIndex == 0
+        actions: _selectedIndex == 0 && _isConnected
             ? [
                 IconButton(
                   icon: const Icon(Icons.filter_list),

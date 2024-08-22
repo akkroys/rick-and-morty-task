@@ -28,6 +28,13 @@ ThemeData lightTheme = ThemeData(
       foregroundColor: const Color(0xffFFFFFF),
     ),
   ),
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+      backgroundColor: const Color(0xff0000FF),
+      foregroundColor: const Color(0xffFFFFFF),
+    ),
+  ),
+  dialogBackgroundColor: const Color(0xffF4F4F9),
 );
 
 ThemeData darkTheme = ThemeData(
@@ -59,4 +66,11 @@ ThemeData darkTheme = ThemeData(
       foregroundColor: const Color(0xffFFFFFF),
     ),
   ),
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+      backgroundColor: const Color(0xff9595FE),
+      foregroundColor: const Color(0xffFFFFFF),
+    ),
+  ),
+  dialogBackgroundColor: const Color(0xff2E2E2F),
 );
