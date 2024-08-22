@@ -61,7 +61,7 @@ class CharacterListTile extends StatelessWidget {
               ),
             ),
             subtitle: Text(
-              character.status,
+              "${character.status} | ${character.species}",
               style: TextStyle(
                 color: Colors.grey[600],
                 fontSize: 14,

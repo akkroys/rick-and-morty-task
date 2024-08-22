@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:rick_morty_task/core/platform/network_info.dart';
 import 'package:rick_morty_task/features/characters/domain/entities/character.dart';
+import 'package:rick_morty_task/features/characters/domain/repositories/character_repository.dart';
 import 'package:rick_morty_task/features/characters/presentation/bloc/characters/characters_bloc.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:rick_morty_task/features/characters/presentation/pages/settings_screen.dart';
 import 'package:rick_morty_task/features/characters/presentation/widgets/character_list_tile.dart';
 import 'package:rick_morty_task/features/characters/presentation/widgets/filter_options.dart';
 import 'package:rick_morty_task/features/characters/presentation/widgets/loading_icon.dart';
+import 'package:rick_morty_task/features/characters/presentation/widgets/show_no_interner.dart';
+import 'package:rick_morty_task/injection_container.dart' as di;
 
 class CharactersListScreen extends StatefulWidget {
   const CharactersListScreen({super.key});
@@ -61,13 +65,40 @@ class _CharactersListScreenState extends State<CharactersListScreen> {
 
   Future<void> _fetchPage(int pageKey) async {
     final bloc = BlocProvider.of<CharactersBloc>(context);
+    final networkInfo = di.sl<NetworkInfo>();
 
-    bloc.add(LoadMoreCharacters(
-      page: pageKey,
-      status: _selectedStatus != 'All' ? _selectedStatus.toLowerCase() : null,
-      species:
-          _selectedSpecies != 'All' ? _selectedSpecies.toLowerCase() : null,
-    ));
+    if (await networkInfo.isConnected) {
+      bloc.add(LoadMoreCharacters(
+        page: pageKey,
+        status: _selectedStatus != 'All' ? _selectedStatus.toLowerCase() : null,
+        species:
+            _selectedSpecies != 'All' ? _selectedSpecies.toLowerCase() : null,
+      ));
+    } else {
+      showNoInternetDialog(context);
+      try {
+        final charactersResult = await context
+            .read<CharacterRepository>()
+            .getCharacters(
+                pageKey,
+                _selectedStatus != 'All' ? _selectedStatus.toLowerCase() : '',
+                _selectedSpecies != 'All'
+                    ? _selectedSpecies.toLowerCase()
+                    : '');
+        charactersResult.fold(
+          (failure) => _pagingController.error = 'Error loading cached data',
+          (characters) {
+            if (characters.isEmpty) {
+              _pagingController.appendLastPage(characters);
+            } else {
+              _pagingController.appendPage(characters, pageKey + 1);
+            }
+          },
+        );
+      } catch (_) {
+        _pagingController.error = 'Error loading cached data';
+      }
+    }
 
     bloc.stream.listen((state) {
       if (state is CharactersLoaded) {
@@ -99,7 +130,9 @@ class _CharactersListScreenState extends State<CharactersListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: _selectedIndex == 0 ? const Text("Characters") : const Text("Settings"),
+        title: _selectedIndex == 0
+            ? const Text("Characters")
+            : const Text("Settings"),
         actions: _selectedIndex == 0
             ? [
                 IconButton(
@@ -130,8 +163,9 @@ class _CharactersListScreenState extends State<CharactersListScreen> {
               onReset: _resetFilter,
             ),
           Expanded(
-            child:
-                _selectedIndex == 0 ? _buildCharactersList() : const SettingsScreen(),
+            child: _selectedIndex == 0
+                ? _buildCharactersList()
+                : const SettingsScreen(),
           ),
         ],
       ),
@@ -173,8 +207,8 @@ class _CharactersListScreenState extends State<CharactersListScreen> {
         firstPageProgressIndicatorBuilder: (context) => const Center(
             child: CustomLoadingIcon(
                 assetPath: "assets/icons/characters_active.svg")),
-        newPageProgressIndicatorBuilder: (context) =>
-            const CustomLoadingIcon(assetPath: "assets/icons/characters_active.svg"),
+        newPageProgressIndicatorBuilder: (context) => const CustomLoadingIcon(
+            assetPath: "assets/icons/characters_active.svg"),
         noItemsFoundIndicatorBuilder: (context) => const Center(
           child: Text('No characters found'),
         ),

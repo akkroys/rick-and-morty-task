@@ -58,7 +58,7 @@ class CharacterDetailScreen extends StatelessWidget {
                           color: Colors.black.withOpacity(0.2),
                           spreadRadius: 4,
                           blurRadius: 8,
-                          offset: Offset(0, 4),
+                          offset: const Offset(0, 4),
                         ),
                       ],
                     ),
